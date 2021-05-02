@@ -1,36 +1,57 @@
 import React, { useState } from 'react';
+import { Button, Form } from 'reactstrap';
+import getWeather from '../helpers/data/weatherApiData';
 import './App.scss';
 
 function App() {
-  const [domWriting, setDomWriting] = useState('Nothing Here!');
+  const [weather, setWeather] = useState([]);
+  const [input, setInput] = useState('');
 
-  const handleClick = (e) => {
-    console.warn(`You clicked ${e.target.id}`);
-    setDomWriting(`You clicked ${e.target.id}! Check the Console!`);
+  const getCurrentWeather = () => {
+    getWeather(input)
+      .then((response) => {
+        weather.push(response);
+        setWeather([...weather]);
+      });
   };
 
+  const handleWeatherSubmit = (e) => {
+    e.preventDefault();
+    setInput('');
+    getCurrentWeather();
+  };
+
+  const handleInput = (e) => {
+    setInput(e.target.value);
+  };
+
+  console.warn(weather);
+
   return (
-    <div className='App'>
-      <h2>INSIDE APP COMPONENT</h2>
-      <div>
-        <button
-          id='this-button'
-          className='btn btn-info'
-          onClick={handleClick}
-        >
-          I am THIS button
-        </button>
-      </div>
-      <div>
-        <button
-          id='that-button'
-          className='btn btn-primary mt-3'
-          onClick={handleClick}
-        >
-          I am THAT button
-        </button>
-      </div>
-      <h3>{domWriting}</h3>
+    <div>
+      <Form
+      onSubmit={handleWeatherSubmit}
+      id="get-weather">
+        <div className="form-group">
+          <h2
+            id="search-title">
+              Get the Weather
+          </h2>
+          <input
+            type="text"
+            className="form-control"
+            id="value"
+            aria-describedby="location"
+            onChange={handleInput}>
+          </input>
+        </div>
+      <Button
+        type="submit"
+        id="search-weather"
+        outline color="dark">
+          Submit
+      </Button>
+      </Form>
     </div>
   );
 }
